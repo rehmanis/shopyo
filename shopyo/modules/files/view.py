@@ -21,8 +21,6 @@ from modules.files.models import Image
 # from shopyoapi.forms import flash_errors
 
 
-
-
 dirpath = os.path.dirname(os.path.abspath(__file__))
 module_info = {}
 
@@ -110,5 +108,3 @@ def upload_tinymce_image():
     output = make_response(404)
     output.headers["Error"] = "Filename needs to be JPG, JPEG, GIF or PNG"
     return output
-
-

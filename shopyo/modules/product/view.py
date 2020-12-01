@@ -93,13 +93,14 @@ def prods_add(category_name):
             if selling_price:
                 p.selling_price = selling_price.strip()
 
-            files = request.files.getlist('photos[]')
+            files = request.files.getlist("photos[]")
 
             for file in files:
                 filename = unique_filename(secure_filename(file.filename))
-                productphotos.save(current_app.config['UPLOADED_PRODUCTPHOTOS_DEST'], 
-                    name=filename)
-                p.resources.append(Resource(type='image', filename=filename))
+                productphotos.save(
+                    current_app.config["UPLOADED_PRODUCTPHOTOS_DEST"], name=filename
+                )
+                p.resources.append(Resource(type="image", filename=filename))
 
             db.session.add(p)
             db.session.commit()
