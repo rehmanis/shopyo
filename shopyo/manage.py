@@ -1,13 +1,13 @@
 import subprocess
+
 import click
 
-from shopyoapi.init import db
 from app import app
 
-from shopyoapi.cmd import clean
-from shopyoapi.cmd import initialise
-from shopyoapi.cmd import create_module
+from shopyoapi.cmd import clean, create_module, initialise
 from shopyoapi.database import autoload_models
+from shopyoapi.init import db
+
 
 def runserver():
     app.run(host="0.0.0.0")

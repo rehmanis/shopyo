@@ -1,17 +1,14 @@
-import os
 import json
+import os
 
-from flask import Blueprint
-from flask import render_template
-from flask import request
-from flask import redirect
-from flask import jsonify
+from flask import Blueprint, jsonify, redirect, render_template, request
+
 from flask_login import login_required
 
-from shopyoapi.init import db
-from shopyoapi.init import ma
-from modules.appointment.models import Appointments
 from shopyoapi.enhance import base_context
+from shopyoapi.init import db, ma
+
+from modules.appointment.models import Appointments
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 module_info = {}

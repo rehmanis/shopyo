@@ -1,22 +1,18 @@
 import importlib
 import os
+import sys
 
 from flask import Flask, redirect
+
 from flask_wtf.csrf import CSRFProtect
 
-import sys
 sys.path.append(".")
-
-from shopyoapi.init import db
-from shopyoapi.init import login_manager
-from shopyoapi.init import ma
-from shopyoapi.init import migrate
-
-from shopyoapi.init import productphotos
 
 from flask_uploads import configure_uploads
 
 from config import app_config
+
+from shopyoapi.init import db, login_manager, ma, migrate, productphotos
 
 base_path = os.path.dirname(os.path.abspath(__file__))
 

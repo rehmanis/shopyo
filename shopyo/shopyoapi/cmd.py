@@ -1,18 +1,15 @@
-import os
-import shutil
-import sys
-import subprocess
 import json
+import os
 import re
+import shutil
+import subprocess
+import sys
 
-from shopyoapi.uploads import add_admin
-from shopyoapi.uploads import add_setting
-
-from .file import trymkdir
+from shopyoapi.uploads import add_admin, add_setting
 
 # from .file import trycopytree
 # from .file import trycopy
-from .file import trymkfile
+from .file import trymkdir, trymkfile
 
 
 def clean():

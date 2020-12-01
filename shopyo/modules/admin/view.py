@@ -3,22 +3,20 @@
    :synopsis: All endpoints of the admin views are defined here.
 
 """
-import os
 import json
+import os
 
 # from config import Config
-from flask import Blueprint, render_template, request, redirect
-from flask import url_for
+from flask import Blueprint, redirect, render_template, request, url_for
 
 from flask_login import login_required
-from shopyoapi.init import db
-
-from shopyoapi.enhance import base_context
 from sqlalchemy import exists
 
+from shopyoapi.enhance import base_context
+from shopyoapi.init import db
+
 from modules.admin.admin import admin_required
-from modules.admin.models import User
-from modules.admin.models import Role
+from modules.admin.models import Role, User
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 module_info = {}
