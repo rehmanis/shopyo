@@ -17,9 +17,7 @@ class Config:
 
     UPLOADED_PRODUCTPHOTOS_DEST = os.path.join(STATIC, "uploads", "products")
     UPLOADED_CATEGORYPHOTOS_DEST = os.path.join(STATIC, "uploads", "category")
-    UPLOADED_SUBCATEGORYPHOTOS_DEST = os.path.join(
-        STATIC, "uploads", "subcategory"
-    )
+    UPLOADED_SUBCATEGORYPHOTOS_DEST = os.path.join(STATIC, "uploads", "subcategory")
     PASSWORD_SALT = "abcdefghi"
     # SQLALCHEMY_DATABASE_URI = "mysql+pymysql://{username}:{password}@{server_name}/{db_name}".format(
     #     username='shopyo_user',
@@ -38,7 +36,7 @@ class DevelopmentConfig(Config):
     # control email confirmation for user registration
     EMAIL_CONFIRMATION_DISABLED = False
     # flask-mailman configs
-    MAIL_SERVER = 'smtp.googlemail.com'
+    MAIL_SERVER = "smtp.googlemail.com"
     MAIL_PORT = 465
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
@@ -49,6 +47,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     """Configurations for testsing"""
+
     ENV = "testing"
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///testing.db"
