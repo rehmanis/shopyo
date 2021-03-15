@@ -1,9 +1,10 @@
 import click
 import os
 import sys
+import importlib.util
 
+from flask.cli import FlaskGroup, pass_script_info
 from flask.cli import with_appcontext
-from flask.cli import FlaskGroup
 from subprocess import run, PIPE
 from shopyo.api.cmd_helper import _clean
 from shopyo.api.cmd_helper import _collectstatic
@@ -11,21 +12,56 @@ from shopyo.api.cmd_helper import _upload_data
 from shopyo.api.file import trymkdir
 from shopyo.api.database import autoload_models
 from shopyo.api.constants import SEP_CHAR, SEP_NUM
+from flask import current_app
+from importlib import invalidate_caches, import_module
 
 
-sys.path.append(os.getcwd())
+HERE = os.path.dirname(os.path.abspath(__file__))
+print("\nhere: ", HERE)
+print("-----------\n")
+# sys.path.insert(0, HERE)
 
-try:
+print("current working directory...")
+# os.chdir(os.getcwd())
+print(os.getcwd())
+print("------------------------------\n")
+# sys.path.append(os.getcwd())
+# try:
+#     from app import create_app
+#     from init import db
+# except Exception as e:
+#     print(e)
+
+
+def create_shopyo_app(info):
+    sys.path.insert(0, os.getcwd())
+    print("\ninside create shopyo...")
+    print(sys.path)
+    print(os.getcwd())
+
+    # specs = importlib.util.find_spec("app", "foo")
+    # print("specs: ", specs)
+    # toolbox = importlib.util.module_from_spec(specs)
+    # specs.loader.exec_module(toolbox)
+
+    # spec = importlib.util.spec_from_file_location("app", os.getcwd() + "/app.py")
+    # print("specs: ", spec)
+    # foo = importlib.util.module_from_spec(spec)
+    # spec.loader.exec_module(foo)
+
     from app import create_app
-    from init import db
-except Exception as e:
-    print(e)
+    config_name = info.data.get('config')
+    print(f"creating app with config '{config_name}'...")
+    print("------------------------------\n")
+    return create_app(config_name=config_name)
 
 
-@click.group(cls=FlaskGroup, create_app=create_app)
-def cli():
+@click.group(cls=FlaskGroup, create_app=create_shopyo_app)
+@click.option('--config', default="development")
+@pass_script_info
+def cli(info, **parmams):
     """CLI for shopyo"""
-    pass
+    info.data['config'] = parmams["config"]
 
 
 @cli.command("startbox2")
@@ -70,23 +106,30 @@ def create_box2(boxname, verbose):
 
 @cli.command("clean2")
 @click.option('--verbose', "-v", is_flag=True, default=False)
-@with_appcontext
 def clean2(verbose):
     """remove __pycache__, migrations/, shopyo.db files and drops db
     if present
     """
-    _clean(db, verbose=verbose)
+    print(current_app.config["ENV"])
+    _clean(verbose=verbose)
 
 
 @cli.command("initialise2")
 @click.option('--verbose', "-v", is_flag=True, default=False)
-@with_appcontext
 def initialise(verbose):
     """
     Create db, migrate, adds default users, add settings
     """
+    # sys.path.append(os.getcwd())
+    # print("current working directory...")
+    # print(os.getcwd())
+    # from init import db
+    print("initializing...")
+    print(current_app.config["ENV"])
+    print(current_app.config["APP_NAME"])
+    print("-----------------\n")
     # drop db, remove mirgration/ and shopyo.db
-    _clean(db, verbose=verbose)
+    _clean(verbose=verbose)
 
     # load all models available inside modules
     autoload_models()
@@ -100,7 +143,7 @@ def initialise(verbose):
         run(["flask", "db", "init"], stdout=PIPE, stderr=PIPE)
     click.echo("")
 
-    # generate an initial migration i.e autodetect changes in the 
+    # generate an initial migration i.e autodetect changes in the
     # tables (table autodetection is limited. See
     # https://flask-migrate.readthedocs.io/en/latest/ for more details)
     click.echo("Migrating db...")
@@ -128,3 +171,7 @@ def initialise(verbose):
     _upload_data(verbose=verbose)
 
     click.echo("All Done!")
+
+
+if __name__ == '__main__':
+    cli()

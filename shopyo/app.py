@@ -2,6 +2,7 @@ import importlib
 import os
 import json
 import jinja2
+import sys
 from flask import Flask
 from flask import send_from_directory
 from flask import redirect
@@ -24,7 +25,7 @@ from init import login_manager
 from init import ma
 from init import migrate
 from init import mail
-from shopyo.api.path import modules_path
+# from path import modules_path
 from shopyo.api.file import trycopy
 
 #
@@ -86,9 +87,18 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 
 
 def create_app(config_name="development"):
+    
+    print("\n\n SHOPYO APP CREATE \n\n")
 
     app = Flask(__name__, instance_relative_config=True)
-    configuration = app_config[config_name]
+
+    try:
+        configuration = app_config[config_name]
+    except KeyError as e:
+        print(f"Invalid config name {e}. Available configurations are:")
+        print(list(app_config.keys()))
+        sys.exit(1)
+
     app.config.from_object(configuration)
 
     if config_name != "testing":
@@ -128,6 +138,7 @@ def create_app(config_name="development"):
     @app.route("/devstatic/<path:boxormodule>/f/<path:filename>")
     def devstatic(boxormodule, filename):
         if app.config["DEBUG"]:
+            modules_path = os.path.join(os.getcwd(), "modules")
             module_static = os.path.join(modules_path, boxormodule, "static")
             return send_from_directory(module_static, filename=filename)
 

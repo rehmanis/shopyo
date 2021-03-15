@@ -1,5 +1,11 @@
 import os
 import pytest
+import sqlite3
+import sys
+import importlib.util
+import subprocess
+
+from click.testing import CliRunner
 from shopyo.api.scripts import cli
 from shopyo.api.constants import SEP_CHAR, SEP_NUM
 
@@ -353,3 +359,83 @@ class TestCliClean:
         assert os.path.exists(migrations_path) is False
 
     # TODO: add test_clean for MySQL to see if tables dropped @rehmanis
+
+
+@pytest.mark.cli
+class TestCliInitialise:
+
+    def test_initialise_no_verbose(self):
+        pass
+
+
+    @pytest.mark.usefixtures("create_foo_project")
+    def test_init_2(self):
+        print()
+        runner = CliRunner()
+        result = runner.invoke(cli, ['--config=testing', "initialise2"])
+        print(result.output)
+        assert result.exit_code == 0
+
+        print(os.getcwd())
+        print("--------------")
+        print(sys.path)
+
+    @pytest.mark.usefixtures("create_new_project")
+    def test_init_with_no_verbose(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, ['--config=development', "initialise2"])
+        print(result.output)
+
+    def test_vir_init(self, venv):
+        venv.install('pyramid', upgrade=True)
+
+
+
+    @pytest.mark.usefixtures("create_hello")
+    def test_hello(self):
+        print(os.getcwd())
+        sys.path.append(os.getcwd())
+
+        # from . import hello
+
+        toolbox_specs = importlib.util.find_spec("hello", ".")
+        toolbox = importlib.util.module_from_spec(toolbox_specs)
+        toolbox_specs.loader.exec_module(toolbox)
+        toolbox.hello()
+
+
+        # spec = importlib.util.spec_from_file_location("hello.hello", os.getcwd() + "/hello.py")
+        # foo = importlib.util.module_from_spec(spec)
+        # spec.loader.exec_module(foo)
+        # foo.hello()
+
+        
+        # expected = set()
+
+        # # from shopyo.init import db as shopyo_db
+        # # print()
+        # # print(shopyo_db.metadata.tables.items())
+        # # db = flask_app.extensions['sqlalchemy'].db
+        # # print(db.metadata.tables.keys())
+
+        # from app import create_app
+        # user_db = create_app("development").extensions['sqlalchemy'].db
+        # print(user_db.metadata.tables.keys())
+        # print()
+        # print()
+        # print(result.output)
+
+
+
+        # assert os.path.exists("migrations")
+        # assert os.path.exists("shopyo.db")
+
+        # conn = sqlite3.connect("shopyo.db")
+        # c = conn.cursor()
+        # c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        # for table in c.fetchall():
+        #     expected.add(table[0])
+
+        #     # print list(c.execute('SELECT * from ?;', (table[0],)))
+        # print(expected)
+        pass

@@ -6,6 +6,7 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 class BaseConfig:
     """Parent configuration class."""
 
+    APP_NAME = "SHOPYO"
     DEBUG = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     BASE_DIR = base_path

@@ -67,7 +67,7 @@ def flask_app():
 
 
 @pytest.fixture(scope="session")
-def test_client(flask_app):
+def test_client(request, flask_app):
     """
     setups up and returns the flask testing app
     """
@@ -75,11 +75,12 @@ def test_client(flask_app):
     with flask_app.test_client() as testing_client:
         # Establish an application context
         with flask_app.app_context():
+            print("here")
             yield testing_client  # this is where the testing happens!
 
 
 @pytest.fixture(scope="session")
-def db(test_client, non_admin_user, admin_user, unconfirmed_user):
+def db(request, test_client, non_admin_user, admin_user, unconfirmed_user):
     """
     creates and returns the initial testing database
     """
@@ -104,7 +105,7 @@ def db(test_client, non_admin_user, admin_user, unconfirmed_user):
 
     yield _db  # this is where the testing happens!
 
-    _db.drop_all()
+    # _db.drop_all()
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -116,6 +117,7 @@ def db_session(db):
 
     Here we not only support commit calls but also rollback calls in tests.
     """
+
     connection = db.engine.connect()
     transaction = connection.begin()
     options = dict(bind=connection, binds={})

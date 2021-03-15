@@ -5,10 +5,10 @@ import os
 import sys
 import click
 import importlib
+from flask import current_app
 
-from shopyo.api.path import root_path
-from shopyo.api.path import static_path
-from shopyo.api.path import modules_path
+
+
 from shopyo.api.file import get_folders
 from shopyo.api.file import trycopytree
 from shopyo.api.file import tryrmcache
@@ -17,7 +17,7 @@ from shopyo.api.file import tryrmtree
 from shopyo.api.constants import SEP_CHAR, SEP_NUM
 
 
-def _clean(db, verbose=False):
+def _clean(verbose=False):
     """
     Deletes shopyo.db and migrations/ if present in current working directory.
     Deletes all __pycache__ folders starting from current working directory
@@ -35,10 +35,11 @@ def _clean(db, verbose=False):
         ...
 
     """
+    print(os.getcwd())
 
     click.echo("Cleaning...")
     click.echo(SEP_CHAR * SEP_NUM)
-
+    db = current_app.extensions['sqlalchemy'].db
     db.drop_all()
     db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
 
@@ -78,6 +79,10 @@ def _collectstatic(target_module=None, verbose=False):
     None
 
     """
+    root_path = os.getcwd()
+    static_path = os.path.join(root_path, "static")
+    modules_path = os.path.join(root_path, "modules")
+
     click.echo("Collecting static...")
     click.echo(SEP_CHAR * SEP_NUM)
     modules_path_in_static = os.path.join(static_path, "modules")
@@ -139,6 +144,17 @@ def _collectstatic(target_module=None, verbose=False):
 def _upload_data(verbose=False):
     click.echo("Uploading initial data to db...")
     click.echo(SEP_CHAR * SEP_NUM)
+    sys.path.append(".")
+    from init import root_path
+
+    print("\n----inside upload data printing root_path:")
+    print(root_path)
+    print("-------------------\n")
+
+
+    # upload = importlib.import_module(
+    #     ".modules.box__default.auth.upload", root_path
+    # )
 
     for folder in os.listdir(os.path.join(root_path, "modules")):
         if folder.startswith("__"):  # ignore __pycache__
@@ -157,8 +173,13 @@ def _upload_data(verbose=False):
                     upload = importlib.import_module(
                         f"modules.{folder}.{sub_folder}.upload"
                     )
+                    print(os.path.join(root_path, "modules", folder))
+                    print("uploads...")
+                    print(f"modules.{folder}.{sub_folder}.upload")
+                    print(upload)
                     upload.upload(verbose=verbose)
                 except ImportError as e:
+                    print(e)
                     if verbose:
                         click.echo(f"[ ] {e}")
         else:
@@ -169,6 +190,7 @@ def _upload_data(verbose=False):
                 )
                 upload.upload(verbose=verbose)
             except ImportError as e:
+                print(e)
                 if verbose:
                     click.echo(f"[ ] {e}")
 

@@ -15,25 +15,25 @@ class Image(db.Model):
         db.DateTime, default=datetime.datetime.now(), nullable=False
     )
 
-    def set_hash(self, password):
-        self.password = generate_password_hash(password, method="sha256")
+    # def set_hash(self, password):
+    #     self.password = generate_password_hash(password, method="sha256")
 
-    def check_hash(self, password):
-        return check_password_hash(self.password, password)
+    # def check_hash(self, password):
+    #     return check_password_hash(self.password, password)
 
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
+    # def insert(self):
+    #     db.session.add(self)
+    #     db.session.commit()
 
-    def update(self):
-        db.session.commit()
+    # def update(self):
+    #     db.session.commit()
 
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+    # def delete(self):
+    #     db.session.delete(self)
+    #     db.session.commit()
 
-    def getImage(self, image_id):
-        return Images.query.filter_by(id=image_id).first()
+    # def getImage(self, image_id):
+    #     return Images.query.filter_by(id=image_id).first()
 
 
 class Resource(db.Model):
@@ -47,19 +47,19 @@ class Resource(db.Model):
         db.DateTime, default=datetime.datetime.now(), nullable=False
     )
 
-    def set_hash(self, password):
-        self.password = generate_password_hash(password, method="sha256")
+    # def set_hash(self, password):
+    #     self.password = generate_password_hash(password, method="sha256")
 
-    def check_hash(self, password):
-        return check_password_hash(self.password, password)
+    # def check_hash(self, password):
+    #     return check_password_hash(self.password, password)
 
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
+    # def insert(self):
+    #     db.session.add(self)
+    #     db.session.commit()
 
-    def update(self):
-        db.session.commit()
+    # def update(self):
+    #     db.session.commit()
 
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+    # def delete(self):
+    #     db.session.delete(self)
+    #     db.session.commit()
